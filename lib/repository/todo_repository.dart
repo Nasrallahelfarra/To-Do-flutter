@@ -4,7 +4,10 @@ import 'package:reactive_todo_app/model/todo.dart';
 class TodoRepository {
   final todoDao = TodoDao();
 
-  Future getAllTodos({String? query}) => todoDao.getTodos(query: query!);
+  Future <List<Todo>?> getAllTodos({String query=''}) async {
+    List<Todo>? list=await todoDao.getTodos(query: query);
+    return list ;
+  }
 
   Future insertTodo(Todo todo) => todoDao.createTodo(todo);
 

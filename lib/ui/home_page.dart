@@ -3,14 +3,24 @@ import 'package:flutter/services.dart';
 import 'package:reactive_todo_app/bloc/todo_bloc.dart';
 import 'package:reactive_todo_app/model/todo.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   HomePage({Key? key, this.title}) : super(key: key);
 
-  //We load our Todo BLoC that is used to get
-  //the stream of Todo for StreamBuilder
-  final TodoBloc todoBloc = TodoBloc();
   final String ?title;
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  //We load our Todo BLoC that is used to get
+   TodoBloc? todoBloc ;
+
+  @override
+  void initState() {
+    todoBloc = TodoBloc();    // TODO: implement initState
+    super.initState();
+  }
   //Allows Todo card to be dismissable horizontally
   final DismissDirection _dismissDirection = DismissDirection.horizontal;
 
@@ -49,7 +59,7 @@ class HomePage extends StatelessWidget {
                     ),
                     onPressed: () {
                       //just re-pull UI for testing purposes
-                      todoBloc.getTodos();
+                      todoBloc!.getTodos();
                     }),
                 Expanded(
                   child: Text(
@@ -171,7 +181,7 @@ class HomePage extends StatelessWidget {
                                     because what's the point of saving empty
                                     Todo
                                     */
-                                    todoBloc.addTodo(newTodo);
+                                    todoBloc!.addTodo(newTodo);
 
                                     //dismisses the bottomsheet
                                     Navigator.pop(context);
@@ -255,7 +265,7 @@ class HomePage extends StatelessWidget {
                                   that contains similar string
                                   in the textform
                                   */
-                                  todoBloc.getTodos(
+                                  todoBloc!.getTodos(
                                       query:
                                           _todoSearchDescriptionFormController
                                               .value.text);
@@ -282,8 +292,8 @@ class HomePage extends StatelessWidget {
     and construct the UI (with state) based on the stream
     */
     return StreamBuilder(
-      stream: todoBloc.todos,
-      builder: (BuildContext context, AsyncSnapshot<List<Todo>> snapshot) {
+      stream: todoBloc!.todos,
+      builder: (BuildContext context, AsyncSnapshot<List<Todo>>? snapshot) {
         return getTodoCardWidget(snapshot);
       },
     );
@@ -323,7 +333,7 @@ class HomePage extends StatelessWidget {
                     delete Todo item by ID whenever
                     the card is dismissed
                     */
-                    todoBloc.deleteTodoById(todo.id!);
+                    todoBloc!.deleteTodoById(todo.id!);
                   },
                   direction: _dismissDirection,
                   key: new ObjectKey(todo),
@@ -343,7 +353,7 @@ class HomePage extends StatelessWidget {
                             This will update Todo isDone with either
                             completed or not
                           */
-                            todoBloc.updateTodo(todo);
+                            todoBloc!.updateTodo(todo);
                           },
                           child: Container(
                             //decoration: BoxDecoration(),
@@ -398,7 +408,7 @@ class HomePage extends StatelessWidget {
 
   Widget loadingData() {
     //pull todos again
-    todoBloc.getTodos();
+    todoBloc!.getTodos();
     return Container(
       child: Center(
         child: Column(
@@ -426,6 +436,6 @@ class HomePage extends StatelessWidget {
     /*close the stream in order
     to avoid memory leaks
     */
-    todoBloc.dispose();
+    todoBloc!.dispose();
   }
 }

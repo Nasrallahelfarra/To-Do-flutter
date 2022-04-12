@@ -2,28 +2,72 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 final todoTABLE = 'Todo';
+
 class DatabaseProvider {
   static final DatabaseProvider dbProvider = DatabaseProvider();
 
   Database? _database;
 
-  Future<Database> get database async {
-    if (_database != null) return _database!;
-    _database = await createDatabase();
-    return _database!;
+  Future<Database> getDatabase() async {
+    if (_database != null) {
+      print("database _database is exists");
+
+      return _database!;
+    } else {
+      print("database createDatabase is exists");
+
+      _database = await createDatabase();
+      return _database!;
+    }
   }
 
   createDatabase() async {
-    Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    //"ReactiveTodo.db is our database instance name
-    String path = join(documentsDirectory.path, "ReactiveTodo.db");
+    final databasePath = await getDatabasesPath();
+    final path = join(databasePath, "data.db");
+    Database? database;
+    if (await Directory(dirname(path)).exists()) {
+      database = await openDatabase(path, version: 1,   onCreate: (Database db, int version) async {
+        // When creating the db, create the table
+        await db.execute('''
+     create table $todoTABLE ( 
+   id integer primary key autoincrement, 
+   description text not null,
+   is_done integer not null)
+    ''');
+        /*  await db.execute("CREATE TABLE $todoTABLE ("
+                  "id INTEGER PRIMARY KEY,"
+                  "description TEXT,"
+                  "is_done INTEGER "
+                  ")");*/
+      });
+    } else {
+      try {
+        await Directory(dirname(path)).create(recursive: true);
+        database = await openDatabase(path, version: 1,
+            onCreate: (Database db, int version) async {
+          // When creating the db, create the table
+          await db.execute('''
+     create table $todoTABLE ( 
+   id integer primary key autoincrement, 
+   description text not null,
+   is_done integer not null)
+    ''');
+          /*  await db.execute("CREATE TABLE $todoTABLE ("
+                  "id INTEGER PRIMARY KEY,"
+                  "description TEXT,"
+                  "is_done INTEGER "
+                  ")");*/
+        });
+      } catch (e) {
+        // ignore: avoid_print
+        print("database is not exists");
 
-    var database = await openDatabase(path,
-        version: 1, onCreate: initDB, onUpgrade: onUpgrade);
+        print(e);
+      }
+    }
     return database;
   }
 
