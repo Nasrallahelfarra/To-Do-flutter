@@ -20,9 +20,11 @@ dependencies:
   cupertino_icons: ^1.0.4
 
 dev_dependencies:
+  test: ^1.17.12
   flutter_test:
     sdk: flutter
-
+  flutter_driver:
+    sdk: flutter
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec

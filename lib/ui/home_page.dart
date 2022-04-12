@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:reactive_todo_app/bloc/todo_bloc.dart';
 import 'package:reactive_todo_app/model/todo.dart';
 
+import '../core/key_ui.dart';
+
 class HomePage extends StatefulWidget {
   HomePage({Key? key, this.title}) : super(key: key);
 
@@ -54,6 +56,7 @@ class _HomePageState extends State<HomePage> {
                 IconButton(
                     icon: Icon(
                       Icons.menu,
+                      key: ValueKey(keyMenuIcon),
                       color: Colors.indigoAccent,
                       size: 28,
                     ),
@@ -64,6 +67,7 @@ class _HomePageState extends State<HomePage> {
                 Expanded(
                   child: Text(
                     "Todo",
+                    key: ValueKey(keyNameAppText),
                     style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w600,
@@ -76,6 +80,8 @@ class _HomePageState extends State<HomePage> {
                   IconButton(
                     icon: Icon(
                       Icons.search,
+                      key: ValueKey(keySearchIcon),
+
                       size: 28,
                       color: Colors.indigoAccent,
                     ),
@@ -95,6 +101,8 @@ class _HomePageState extends State<HomePage> {
         floatingActionButton: Padding(
           padding: EdgeInsets.only(bottom: 25),
           child: FloatingActionButton(
+            key: ValueKey(keyAddToDo),
+
             elevation: 5.0,
             onPressed: () {
               _showAddTodoSheet(context);
@@ -137,6 +145,7 @@ class _HomePageState extends State<HomePage> {
                         children: <Widget>[
                           Expanded(
                             child: TextFormField(
+                              key: ValueKey(keyAddToDoTextFiled),
                               controller: _todoDescriptionFormController,
                               textInputAction: TextInputAction.newline,
                               maxLines: 4,
@@ -168,6 +177,7 @@ class _HomePageState extends State<HomePage> {
                                 icon: Icon(
                                   Icons.save,
                                   size: 22,
+                                  key: ValueKey(keySaveIcon),
                                   color: Colors.white,
                                 ),
                                 onPressed: () {
@@ -344,6 +354,13 @@ class _HomePageState extends State<HomePage> {
                       ),
                       color: Colors.white,
                       child: ListTile(
+                        trailing: InkWell(
+                          onTap: (){
+                            todoBloc!.deleteTodoById(todo.id!);
+
+                          },
+                            key: ValueKey('$keyRemoveIcon$itemPosition'),
+                            child: Icon(Icons.delete,color: Colors.red,)),
                         leading: InkWell(
                           onTap: () {
                             //Reverse the value
@@ -364,10 +381,15 @@ class _HomePageState extends State<HomePage> {
                                       Icons.done,
                                       size: 26.0,
                                       color: Colors.indigoAccent,
-                                    )
+                                key: ValueKey('$keyToDoSelectCheckBox$itemPosition'),
+
+                              )
                                   : Icon(
-                                      Icons.check_box_outline_blank,
-                                      size: 26.0,
+
+                                Icons.check_box_outline_blank,
+                                key: ValueKey('$keyToDoUnSelectCheckBox$itemPosition'),
+
+                                size: 26.0,
                                       color: Colors.tealAccent,
                                     ),
                             ),
@@ -375,6 +397,8 @@ class _HomePageState extends State<HomePage> {
                         ),
                         title: Text(
                           todo.description!,
+                          key: ValueKey('$keyTitleToDoText$itemPosition'),
+
                           style: TextStyle(
                               fontSize: 16.5,
                               fontFamily: 'RobotoMono',
