@@ -7,9 +7,7 @@ import 'todo_state.dart';
 class TodoCubit extends Cubit<TodoState> {
   final TodoRepository _todoRepository;
 
-  TodoCubit(this._todoRepository) : super(TodoInitialState()) {
-    getTodos();
-  }
+  TodoCubit(this._todoRepository) : super(TodoInitialState());
 
   void getTodos() async {
     List<Todo> items = await _todoRepository.getTodos();

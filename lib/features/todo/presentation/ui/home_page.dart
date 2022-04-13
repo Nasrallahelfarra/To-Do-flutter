@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<TodoCubit>(
-      create: (_) => sl<TodoCubit>(),
+      create: (_) => sl<TodoCubit>()..getTodos(),
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         body: SafeArea(
