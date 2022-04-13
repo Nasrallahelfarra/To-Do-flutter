@@ -1,39 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:reactive_todo_app/bloc/todo_bloc.dart';
-import 'package:reactive_todo_app/model/todo.dart';
+import 'package:reactive_todo_app/core/key_ui.dart';
+import 'package:reactive_todo_app/features/todo/presentation/cubit/todo_cubit.dart';
+import 'package:reactive_todo_app/features/todo/presentation/cubit/todo_state.dart';
+import 'package:reactive_todo_app/main.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../core/key_ui.dart';
+import '../../data/model/todo.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key, this.title}) : super(key: key);
 
-  final String ?title;
+  final String? title;
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  //We load our Todo BLoC that is used to get
-   TodoBloc? todoBloc ;
-
-  @override
-  void initState() {
-    todoBloc = TodoBloc();    // TODO: implement initState
-    super.initState();
-  }
   //Allows Todo card to be dismissable horizontally
   final DismissDirection _dismissDirection = DismissDirection.horizontal;
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-        statusBarColor: Colors.white,
-        systemNavigationBarColor: Colors.white,
-        systemNavigationBarIconBrightness: Brightness.dark,
-        statusBarBrightness: Brightness.dark));
-    return Scaffold(
+    return BlocProvider<TodoCubit>(
+      create: (_) => sl<TodoCubit>(),
+      child: Scaffold(
         resizeToAvoidBottomInset: false,
         body: SafeArea(
             child: Container(
@@ -53,7 +44,8 @@ class _HomePageState extends State<HomePage> {
             child: Row(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
-                IconButton(
+                Builder(builder: (context) {
+                  return IconButton(
                     icon: Icon(
                       Icons.menu,
                       key: ValueKey(keyMenuIcon),
@@ -61,12 +53,14 @@ class _HomePageState extends State<HomePage> {
                       size: 28,
                     ),
                     onPressed: () {
-                      //just re-pull UI for testing purposes
-                      todoBloc!.getTodos();
-                    }),
+                      final TodoCubit cubit = context.read<TodoCubit>();
+                      cubit.getTodos();
+                    },
+                  );
+                }),
                 Expanded(
                   child: Text(
-                    "Todo",
+                    'Todo',
                     key: ValueKey(keyNameAppText),
                     style: TextStyle(
                         color: Colors.black,
@@ -77,18 +71,20 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 Wrap(children: <Widget>[
-                  IconButton(
-                    icon: Icon(
-                      Icons.search,
-                      key: ValueKey(keySearchIcon),
-
-                      size: 28,
-                      color: Colors.indigoAccent,
-                    ),
-                    onPressed: () {
-                      _showTodoSearchSheet(context);
-                    },
-                  ),
+                  Builder(builder: (context) {
+                    return IconButton(
+                      icon: Icon(
+                        Icons.search,
+                        key: ValueKey(keySearchIcon),
+                        size: 28,
+                        color: Colors.indigoAccent,
+                      ),
+                      onPressed: () {
+                        final TodoCubit cubit = context.read<TodoCubit>();
+                        _showTodoSearchSheet(context, cubit);
+                      },
+                    );
+                  }),
                   Padding(
                     padding: EdgeInsets.only(right: 5),
                   )
@@ -100,38 +96,42 @@ class _HomePageState extends State<HomePage> {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: Padding(
           padding: EdgeInsets.only(bottom: 25),
-          child: FloatingActionButton(
-            key: ValueKey(keyAddToDo),
-
-            elevation: 5.0,
-            onPressed: () {
-              _showAddTodoSheet(context);
-            },
-            backgroundColor: Colors.white,
-            child: Icon(
-              Icons.add,
-              size: 32,
-              color: Colors.indigoAccent,
-            ),
-          ),
-        ));
+          child: Builder(builder: (context) {
+            return FloatingActionButton(
+              key: ValueKey(keyAddToDo),
+              elevation: 5.0,
+              onPressed: () {
+                final TodoCubit cubit = context.read<TodoCubit>();
+                _showAddTodoSheet(context, cubit);
+              },
+              backgroundColor: Colors.white,
+              child: Icon(
+                Icons.add,
+                size: 32,
+                color: Colors.indigoAccent,
+              ),
+            );
+          }),
+        ),
+      ),
+    );
   }
 
-  void _showAddTodoSheet(BuildContext context) {
+  void _showAddTodoSheet(BuildContext context, TodoCubit cubit) {
     final _todoDescriptionFormController = TextEditingController();
     showModalBottomSheet(
         context: context,
         builder: (builder) {
-          return new Padding(
+          return Padding(
             padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom),
-            child: new Container(
+            child: Container(
               color: Colors.transparent,
-              child: new Container(
+              child: Container(
                 height: 230,
-                decoration: new BoxDecoration(
+                decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: new BorderRadius.only(
+                    borderRadius: BorderRadius.only(
                         topLeft: const Radius.circular(10.0),
                         topRight: const Radius.circular(10.0))),
                 child: Padding(
@@ -154,11 +154,11 @@ class _HomePageState extends State<HomePage> {
                               autofocus: true,
                               decoration: const InputDecoration(
                                   hintText: 'I have to...',
-                                  labelText: 'New Todo',
+                                  labelText: ' Todo',
                                   labelStyle: TextStyle(
                                       color: Colors.indigoAccent,
                                       fontWeight: FontWeight.w500)),
-                              validator: ( value) {
+                              validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'Empty description!';
                                 }
@@ -181,19 +181,13 @@ class _HomePageState extends State<HomePage> {
                                   color: Colors.white,
                                 ),
                                 onPressed: () {
-                                  final newTodo = Todo(
-                                      description:
-                                          _todoDescriptionFormController
-                                              .value.text);
-                                  if (newTodo.description!.isNotEmpty) {
-                                    /*Create new Todo object and make sure
-                                    the Todo description is not empty,
-                                    because what's the point of saving empty
-                                    Todo
-                                    */
-                                    todoBloc!.addTodo(newTodo);
-
-                                    //dismisses the bottomsheet
+                                  final todo = Todo(
+                                    _todoDescriptionFormController.value.text,
+                                  );
+                                  if (todo.description.isNotEmpty) {
+                                    final TodoCubit cubit =
+                                        context.read<TodoCubit>();
+                                    cubit.addTodo(todo);
                                     Navigator.pop(context);
                                   }
                                 },
@@ -211,21 +205,21 @@ class _HomePageState extends State<HomePage> {
         });
   }
 
-  void _showTodoSearchSheet(BuildContext context) {
+  void _showTodoSearchSheet(BuildContext context, TodoCubit cubit) {
     final _todoSearchDescriptionFormController = TextEditingController();
     showModalBottomSheet(
         context: context,
         builder: (builder) {
-          return new Padding(
+          return Padding(
             padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom),
-            child: new Container(
+            child: Container(
               color: Colors.transparent,
-              child: new Container(
+              child: Container(
                 height: 230,
-                decoration: new BoxDecoration(
+                decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: new BorderRadius.only(
+                    borderRadius: BorderRadius.only(
                         topLeft: const Radius.circular(10.0),
                         topRight: const Radius.circular(10.0))),
                 child: Padding(
@@ -252,7 +246,7 @@ class _HomePageState extends State<HomePage> {
                                     color: Colors.indigoAccent,
                                     fontWeight: FontWeight.w500),
                               ),
-                              validator: ( value) {
+                              validator: (value) {
                                 return value!.contains('@')
                                     ? 'Do not use the @ char.'
                                     : null;
@@ -271,15 +265,12 @@ class _HomePageState extends State<HomePage> {
                                   color: Colors.white,
                                 ),
                                 onPressed: () {
-                                  /*This will get all todos
-                                  that contains similar string
-                                  in the textform
-                                  */
-                                  todoBloc!.getTodos(
-                                      query:
-                                          _todoSearchDescriptionFormController
-                                              .value.text);
-                                  //dismisses the bottomsheet
+                                  final TodoCubit cubit =
+                                      context.read<TodoCubit>();
+                                  cubit.search(
+                                    _todoSearchDescriptionFormController
+                                        .value.text,
+                                  );
                                   Navigator.pop(context);
                                 },
                               ),
@@ -297,41 +288,28 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget getTodosWidget() {
-    /*The StreamBuilder widget,
-    basically this widget will take stream of data (todos)
-    and construct the UI (with state) based on the stream
-    */
-    return StreamBuilder(
-      stream: todoBloc!.todos,
-      builder: (BuildContext context, AsyncSnapshot<List<Todo>>? snapshot) {
-        return getTodoCardWidget(snapshot);
+    return BlocBuilder<TodoCubit, TodoState>(
+      builder: (BuildContext context, TodoState state) {
+        return getTodoCardWidget(state);
       },
     );
   }
 
-  Widget getTodoCardWidget(AsyncSnapshot<List<Todo>>? snapshot) {
-    /*Since most of our operations are asynchronous
-    at initial state of the operation there will be no stream
-    so we need to handle it if this was the case
-    by showing users a processing/loading indicator*/
-    if (snapshot!.hasData) {
-      /*Also handles whenever there's stream
-      but returned returned 0 records of Todo from DB.
-      If that the case show user that you have empty Todos
-      */
-      return snapshot.data!.length != 0
+  Widget getTodoCardWidget(TodoState state) {
+    if (state is TodoLoadedState) {
+      return state.items.isNotEmpty
           ? ListView.builder(
-              itemCount: snapshot.data!.length,
+              itemCount: state.items.length,
               itemBuilder: (context, itemPosition) {
-                Todo? todo = snapshot.data![itemPosition];
-                final Widget dismissibleCard = new Dismissible(
+                Todo? todo = state.items[itemPosition];
+                final Widget dismissibleCard = Dismissible(
                   background: Container(
                     child: Padding(
                       padding: EdgeInsets.only(left: 10),
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          "Deleting",
+                          'Deleting',
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
@@ -339,14 +317,11 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.redAccent,
                   ),
                   onDismissed: (direction) {
-                    /*The magic
-                    delete Todo item by ID whenever
-                    the card is dismissed
-                    */
-                    todoBloc!.deleteTodoById(todo.id!);
+                    final TodoCubit cubit = context.read<TodoCubit>();
+                    cubit.deleteTodo(todo.id);
                   },
                   direction: _dismissDirection,
-                  key: new ObjectKey(todo),
+                  key: ObjectKey(todo),
                   child: Card(
                       shape: RoundedRectangleBorder(
                         side: BorderSide(color: Colors.grey[200]!, width: 0.5),
@@ -355,22 +330,20 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.white,
                       child: ListTile(
                         trailing: InkWell(
-                          onTap: (){
-                            todoBloc!.deleteTodoById(todo.id!);
-
-                          },
+                            onTap: () {
+                              final TodoCubit cubit = context.read<TodoCubit>();
+                              cubit.deleteTodo(todo.id);
+                            },
                             key: ValueKey('$keyRemoveIcon$itemPosition'),
-                            child: Icon(Icons.delete,color: Colors.red,)),
+                            child: Icon(
+                              Icons.delete,
+                              color: Colors.red,
+                            )),
                         leading: InkWell(
                           onTap: () {
-                            //Reverse the value
                             todo.isDone = !todo.isDone;
-                          /*
-                            Another magic.
-                            This will update Todo isDone with either
-                            completed or not
-                          */
-                            todoBloc!.updateTodo(todo);
+                            final TodoCubit cubit = context.read<TodoCubit>();
+                            cubit.updateTodo(todo);
                           },
                           child: Container(
                             //decoration: BoxDecoration(),
@@ -381,24 +354,22 @@ class _HomePageState extends State<HomePage> {
                                       Icons.done,
                                       size: 26.0,
                                       color: Colors.indigoAccent,
-                                key: ValueKey('$keyToDoSelectCheckBox$itemPosition'),
-
-                              )
+                                      key: ValueKey(
+                                          '$keyToDoSelectCheckBox$itemPosition'),
+                                    )
                                   : Icon(
-
-                                Icons.check_box_outline_blank,
-                                key: ValueKey('$keyToDoUnSelectCheckBox$itemPosition'),
-
-                                size: 26.0,
+                                      Icons.check_box_outline_blank,
+                                      key: ValueKey(
+                                          '$keyToDoUnSelectCheckBox$itemPosition'),
+                                      size: 26.0,
                                       color: Colors.tealAccent,
                                     ),
                             ),
                           ),
                         ),
                         title: Text(
-                          todo.description!,
+                          todo.description,
                           key: ValueKey('$keyTitleToDoText$itemPosition'),
-
                           style: TextStyle(
                               fontSize: 16.5,
                               fontFamily: 'RobotoMono',
@@ -420,19 +391,12 @@ class _HomePageState extends State<HomePage> {
             ));
     } else {
       return Center(
-        /*since most of our I/O operations are done
-        outside the main thread asynchronously
-        we may want to display a loading indicator
-        to let the use know the app is currently
-        processing*/
         child: loadingData(),
       );
     }
   }
 
   Widget loadingData() {
-    //pull todos again
-    todoBloc!.getTodos();
     return Container(
       child: Center(
         child: Column(
@@ -454,12 +418,5 @@ class _HomePageState extends State<HomePage> {
         style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500),
       ),
     );
-  }
-
-  dispose() {
-    /*close the stream in order
-    to avoid memory leaks
-    */
-    todoBloc!.dispose();
   }
 }
