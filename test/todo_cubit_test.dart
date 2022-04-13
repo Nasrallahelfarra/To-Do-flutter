@@ -30,6 +30,22 @@ void main() {
     ],
   );
 
+  final List<Todo> todos = [
+    Todo('Pray'),
+    Todo('Eat'),
+    Todo('Work'),
+  ];
+
+  blocTest(
+    'cubit emits TodoLoadedState when todo box is not empty',
+    setUp: () => mockTodoBoxResult(results: todos),
+    build: () => sl<TodoCubit>(),
+    act: (TodoCubit cubit) => cubit.getTodos(),
+    expect: () => [
+      TodoLoadedState(todos),
+    ],
+  );
+
   tearDown(() async {
     FakeTodoBox.stubbedResults = [];
     await sl.reset();
