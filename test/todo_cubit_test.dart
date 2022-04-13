@@ -1,4 +1,4 @@
-
+import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:objectbox/objectbox.dart';
@@ -20,18 +20,31 @@ void main() {
     expect(sl<TodoCubit>().state, equals(TodoInitialState()));
   });
 
+  blocTest(
+    'cubit emits TodoEmptyState when todo box is empty',
+    setUp: () => mockTodoBoxResult(results: []),
+    build: () => sl<TodoCubit>(),
+    act: (TodoCubit cubit) => cubit.getTodos(),
+    expect: () => [
+      TodoEmptyState(),
+    ],
+  );
+
   tearDown(() async {
+    FakeTodoBox.stubbedResults = [];
     await sl.reset();
   });
 }
 
-class FakeObjectBoxStore extends Fake implements Store {
-
-
+mockTodoBoxResult({required List<Todo> results}) {
+  FakeTodoBox.stubbedResults = results;
 }
-class FakeTodoBox extends Fake implements Box<Todo> {
 
+class FakeObjectBoxStore extends Fake implements Store {}
+
+class FakeTodoBox extends Fake implements Box<Todo> {
+  static List<Todo> stubbedResults = [];
 
   @override
-  List<Todo> getAll() => [];
+  List<Todo> getAll() => stubbedResults;
 }
