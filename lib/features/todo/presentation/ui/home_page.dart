@@ -297,98 +297,96 @@ class _HomePageState extends State<HomePage> {
 
   Widget getTodoCardWidget(TodoState state) {
     if (state is TodoLoadedState) {
-      return state.items.isNotEmpty
-          ? ListView.builder(
-              itemCount: state.items.length,
-              itemBuilder: (context, itemPosition) {
-                Todo? todo = state.items[itemPosition];
-                final Widget dismissibleCard = Dismissible(
-                  background: Container(
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 10),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Deleting',
-                          style: TextStyle(color: Colors.white),
-                        ),
+      return ListView.builder(
+        itemCount: state.items.length,
+        itemBuilder: (context, itemPosition) {
+          Todo? todo = state.items[itemPosition];
+          final Widget dismissibleCard = Dismissible(
+            background: Container(
+              child: Padding(
+                padding: EdgeInsets.only(left: 10),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Deleting',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+              color: Colors.redAccent,
+            ),
+            onDismissed: (direction) {
+              final TodoCubit cubit = context.read<TodoCubit>();
+              cubit.deleteTodo(todo.id);
+            },
+            direction: _dismissDirection,
+            key: ObjectKey(todo),
+            child: Card(
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(color: Colors.grey[200]!, width: 0.5),
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                color: Colors.white,
+                child: ListTile(
+                  trailing: InkWell(
+                      onTap: () {
+                        final TodoCubit cubit = context.read<TodoCubit>();
+                        cubit.deleteTodo(todo.id);
+                      },
+                      key: ValueKey('$keyRemoveIcon$itemPosition'),
+                      child: Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      )),
+                  leading: InkWell(
+                    onTap: () {
+                      todo.isDone = !todo.isDone;
+                      final TodoCubit cubit = context.read<TodoCubit>();
+                      cubit.updateTodo(todo);
+                    },
+                    child: Container(
+                      //decoration: BoxDecoration(),
+                      child: Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: todo.isDone
+                            ? Icon(
+                                Icons.done,
+                                size: 26.0,
+                                color: Colors.indigoAccent,
+                                key: ValueKey(
+                                    '$keyToDoSelectCheckBox$itemPosition'),
+                              )
+                            : Icon(
+                                Icons.check_box_outline_blank,
+                                key: ValueKey(
+                                    '$keyToDoUnSelectCheckBox$itemPosition'),
+                                size: 26.0,
+                                color: Colors.tealAccent,
+                              ),
                       ),
                     ),
-                    color: Colors.redAccent,
                   ),
-                  onDismissed: (direction) {
-                    final TodoCubit cubit = context.read<TodoCubit>();
-                    cubit.deleteTodo(todo.id);
-                  },
-                  direction: _dismissDirection,
-                  key: ObjectKey(todo),
-                  child: Card(
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(color: Colors.grey[200]!, width: 0.5),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      color: Colors.white,
-                      child: ListTile(
-                        trailing: InkWell(
-                            onTap: () {
-                              final TodoCubit cubit = context.read<TodoCubit>();
-                              cubit.deleteTodo(todo.id);
-                            },
-                            key: ValueKey('$keyRemoveIcon$itemPosition'),
-                            child: Icon(
-                              Icons.delete,
-                              color: Colors.red,
-                            )),
-                        leading: InkWell(
-                          onTap: () {
-                            todo.isDone = !todo.isDone;
-                            final TodoCubit cubit = context.read<TodoCubit>();
-                            cubit.updateTodo(todo);
-                          },
-                          child: Container(
-                            //decoration: BoxDecoration(),
-                            child: Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: todo.isDone
-                                  ? Icon(
-                                      Icons.done,
-                                      size: 26.0,
-                                      color: Colors.indigoAccent,
-                                      key: ValueKey(
-                                          '$keyToDoSelectCheckBox$itemPosition'),
-                                    )
-                                  : Icon(
-                                      Icons.check_box_outline_blank,
-                                      key: ValueKey(
-                                          '$keyToDoUnSelectCheckBox$itemPosition'),
-                                      size: 26.0,
-                                      color: Colors.tealAccent,
-                                    ),
-                            ),
-                          ),
-                        ),
-                        title: Text(
-                          todo.description,
-                          key: ValueKey('$keyTitleToDoText$itemPosition'),
-                          style: TextStyle(
-                              fontSize: 16.5,
-                              fontFamily: 'RobotoMono',
-                              fontWeight: FontWeight.w500,
-                              decoration: todo.isDone
-                                  ? TextDecoration.lineThrough
-                                  : TextDecoration.none),
-                        ),
-                      )),
-                );
-                return dismissibleCard;
-              },
-            )
-          : Container(
-              child: Center(
-              //this is used whenever there 0 Todo
-              //in the data base
-              child: noTodoMessageWidget(),
-            ));
+                  title: Text(
+                    todo.description,
+                    key: ValueKey('$keyTitleToDoText$itemPosition'),
+                    style: TextStyle(
+                        fontSize: 16.5,
+                        fontFamily: 'RobotoMono',
+                        fontWeight: FontWeight.w500,
+                        decoration: todo.isDone
+                            ? TextDecoration.lineThrough
+                            : TextDecoration.none),
+                  ),
+                )),
+          );
+          return dismissibleCard;
+        },
+      );
+    } else if (state is TodoEmptyState) {
+      return Container(
+          child: Center(
+        child: noTodoMessageWidget(),
+      ));
     } else {
       return Center(
         child: loadingData(),
