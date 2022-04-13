@@ -1,17 +1,15 @@
 import 'dart:io';
-
-import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
-
 import '../../pom/home_pom.dart';
 import '../../utilities.dart';
-class dsdf{
 
-}
+class dsdf {}
+
 Future<void> main() async {
   group("end to end tests Add To do", () {
-
-    test('Verify that pressing on "Add To Do" button leads to open "BottomSheet Add To Do', () async {
+    test(
+        'Verify that pressing on "Add To Do" button leads to open "BottomSheet Add To Do',
+        () async {
       await Utilities.tap(HomePom.getAddButton());
       await Utilities.waitForElement(HomePom.getAddToDoTextFiled());
     });
@@ -22,10 +20,11 @@ Future<void> main() async {
       await Utilities.isPresented(HomePom.getSaveIcon());
     });
     test(' fill Add To Do TestFiled', () async {
-      await Utilities.fillTextThenWait(HomePom.getAddToDoTextFiled(),'Example To Do ');
-
+      await Utilities.fillTextThenWait(
+          HomePom.getAddToDoTextFiled(), 'Example To Do ');
     });
-    test('Verify that pressing on "Save" icon leads to Add to Do To home', () async {
+    test('Verify that pressing on "Save" icon leads to Add to Do To home',
+        () async {
       await Utilities.tap(HomePom.getSaveIcon());
       await Utilities.waitForElementAbsent(HomePom.getSaveIcon());
       await Utilities.waitForElement(HomePom.getTitleTodoText());
@@ -39,7 +38,6 @@ Future<void> main() async {
     test('Verify the existence of "remove icon "  filed', () async {
       await Utilities.isPresented(HomePom.getRemoveIcon());
       sleep(Duration(seconds: 2));
-
     });
   });
 }
