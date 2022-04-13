@@ -20,31 +20,33 @@ void main() {
     expect(sl<TodoCubit>().state, equals(TodoInitialState()));
   });
 
-  blocTest(
-    'cubit emits TodoEmptyState when todo box is empty',
-    setUp: () => mockTodoBoxResult(results: []),
-    build: () => sl<TodoCubit>(),
-    act: (TodoCubit cubit) => cubit.getTodos(),
-    expect: () => [
-      TodoEmptyState(),
-    ],
-  );
+  group('get todo', () {
+    blocTest(
+      'cubit emits TodoEmptyState when todo box is empty',
+      setUp: () => mockTodoBoxResult(results: []),
+      build: () => sl<TodoCubit>(),
+      act: (TodoCubit cubit) => cubit.getTodos(),
+      expect: () => [
+        TodoEmptyState(),
+      ],
+    );
 
-  final List<Todo> todos = [
-    Todo('Pray'),
-    Todo('Eat'),
-    Todo('Work'),
-  ];
+    final List<Todo> todos = [
+      Todo('Pray'),
+      Todo('Eat'),
+      Todo('Work'),
+    ];
 
-  blocTest(
-    'cubit emits TodoLoadedState when todo box is not empty',
-    setUp: () => mockTodoBoxResult(results: todos),
-    build: () => sl<TodoCubit>(),
-    act: (TodoCubit cubit) => cubit.getTodos(),
-    expect: () => [
-      TodoLoadedState(todos),
-    ],
-  );
+    blocTest(
+      'cubit emits TodoLoadedState when todo box is not empty',
+      setUp: () => mockTodoBoxResult(results: todos),
+      build: () => sl<TodoCubit>(),
+      act: (TodoCubit cubit) => cubit.getTodos(),
+      expect: () => [
+        TodoLoadedState(todos),
+      ],
+    );
+  });
 
   tearDown(() async {
     FakeTodoBox.stubbedResults = [];
