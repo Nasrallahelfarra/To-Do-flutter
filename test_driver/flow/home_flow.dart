@@ -1,12 +1,11 @@
-import '../steps/home/add_to_do_step.dart' as add_to_do_step;
-import '../steps/home/view_home_step.dart' as view_home_step;
-import '../steps/home/delete_to_do_step.dart' as delete_to_do_step;
-import '../steps/home/edite_to_do.dart' as edite_to_do;
-
+import '../steps/home/add_todo_item.dart' as add_todo_item;
+import '../steps/home/view_home.dart' as view_home;
+import '../steps/home/delete_todo_item.dart' as delete_todo_item;
+import '../steps/home/mark_item_as_done..dart' as mark_item_as_done;
 
 Future<void> main() async {
-  await view_home_step.main();
-  await add_to_do_step.main();
-  await edite_to_do.main();
-  await delete_to_do_step.main();
+  await view_home.main();
+  await add_todo_item.main();
+  await mark_item_as_done.main();
+  await delete_todo_item.main();
 }
