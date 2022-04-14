@@ -67,6 +67,20 @@ void main() {
       ],
     );
 
+    blocTest(
+      'cubit emits TodoLoadedState with updated item',
+      setUp: () => mockTodoBoxResult(results: todos),
+      build: () => sl<TodoCubit>(),
+      act: (TodoCubit cubit) {
+        var todo = Todo.create(3, 'Work');
+        todo.isDone = true;
+        cubit.updateTodo(todo);
+      },
+      verify: (TodoCubit cubit) {
+        expect((cubit.state as TodoLoadedState).items.last.isDone, true);
+      },
+    );
+
     final Todo removeTodo = Todo.create(5, 'Sad');
 
     blocTest(
@@ -118,7 +132,13 @@ class FakeTodoBox extends Fake implements Box<Todo> {
 
   @override
   int put(Todo object, {PutMode mode = PutMode.put}) {
-    stubbedResults.add(object);
+    final int index =
+        stubbedResults.indexWhere((element) => element.id == object.id);
+    if (index != -1) {
+      stubbedResults[index] = object;
+    } else {
+      stubbedResults.add(object);
+    }
     return object.id;
   }
 
