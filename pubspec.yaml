@@ -19,10 +19,7 @@ dependencies:
   objectbox: ^1.4.1
   objectbox_flutter_libs: ^1.4.1
 dev_dependencies:
-  test: ^1.17.12
   flutter_test:
-    sdk: flutter
-  flutter_driver:
     sdk: flutter
   bloc_test: ^9.0.3
   build_runner: ^2.1.8

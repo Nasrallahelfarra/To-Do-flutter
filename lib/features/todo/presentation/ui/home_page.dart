@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:reactive_todo_app/core/key_ui.dart';
 import 'package:reactive_todo_app/features/todo/presentation/cubit/todo_cubit.dart';
 import 'package:reactive_todo_app/features/todo/presentation/cubit/todo_state.dart';
 import 'package:reactive_todo_app/main.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../data/model/todo.dart';
 
 class HomePage extends StatefulWidget {
@@ -48,7 +46,6 @@ class _HomePageState extends State<HomePage> {
                   return IconButton(
                     icon: Icon(
                       Icons.menu,
-                      key: ValueKey(keyMenuIcon),
                       color: Colors.indigoAccent,
                       size: 28,
                     ),
@@ -61,7 +58,6 @@ class _HomePageState extends State<HomePage> {
                 Expanded(
                   child: Text(
                     'Todo',
-                    key: ValueKey(keyNameAppText),
                     style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w600,
@@ -75,7 +71,6 @@ class _HomePageState extends State<HomePage> {
                     return IconButton(
                       icon: Icon(
                         Icons.search,
-                        key: ValueKey(keySearchIcon),
                         size: 28,
                         color: Colors.indigoAccent,
                       ),
@@ -98,7 +93,6 @@ class _HomePageState extends State<HomePage> {
           padding: EdgeInsets.only(bottom: 25),
           child: Builder(builder: (context) {
             return FloatingActionButton(
-              key: ValueKey(keyAddToDo),
               elevation: 5.0,
               onPressed: () {
                 final TodoCubit cubit = context.read<TodoCubit>();
@@ -145,7 +139,6 @@ class _HomePageState extends State<HomePage> {
                         children: <Widget>[
                           Expanded(
                             child: TextFormField(
-                              key: ValueKey(keyAddToDoTextFiled),
                               controller: _todoDescriptionFormController,
                               textInputAction: TextInputAction.newline,
                               maxLines: 4,
@@ -177,7 +170,6 @@ class _HomePageState extends State<HomePage> {
                                 icon: Icon(
                                   Icons.save,
                                   size: 22,
-                                  key: ValueKey(keySaveIcon),
                                   color: Colors.white,
                                 ),
                                 onPressed: () {
@@ -334,7 +326,6 @@ class _HomePageState extends State<HomePage> {
                               final TodoCubit cubit = context.read<TodoCubit>();
                               cubit.deleteTodo(todo.id);
                             },
-                            key: ValueKey('$keyRemoveIcon$itemPosition'),
                             child: Icon(
                               Icons.delete,
                               color: Colors.red,
@@ -354,13 +345,9 @@ class _HomePageState extends State<HomePage> {
                                       Icons.done,
                                       size: 26.0,
                                       color: Colors.indigoAccent,
-                                      key: ValueKey(
-                                          '$keyToDoSelectCheckBox$itemPosition'),
                                     )
                                   : Icon(
                                       Icons.check_box_outline_blank,
-                                      key: ValueKey(
-                                          '$keyToDoUnSelectCheckBox$itemPosition'),
                                       size: 26.0,
                                       color: Colors.tealAccent,
                                     ),
@@ -369,7 +356,6 @@ class _HomePageState extends State<HomePage> {
                         ),
                         title: Text(
                           todo.description,
-                          key: ValueKey('$keyTitleToDoText$itemPosition'),
                           style: TextStyle(
                               fontSize: 16.5,
                               fontFamily: 'RobotoMono',
