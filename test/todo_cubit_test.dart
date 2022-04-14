@@ -49,13 +49,13 @@ void main() {
   });
 
   group('todo operations', () {
-    final List<Todo> todos = [
-      Todo('Pray'),
-      Todo('Eat'),
-      Todo('Work'),
+    List<Todo> todos = [
+      Todo.create(1, 'Pray'),
+      Todo.create(2, 'Eat'),
+      Todo.create(3, 'Work'),
     ];
 
-    final Todo newTodo = Todo('Sport');
+    final Todo newTodo = Todo.create(4, 'Sport');
 
     blocTest(
       'cubit emits TodoLoadedState with new item after add todo item',
@@ -66,8 +66,27 @@ void main() {
         TodoLoadedState(todos..add(newTodo)),
       ],
     );
-  });
 
+    final Todo removeTodo = Todo.create(5, 'Sad');
+
+    blocTest(
+      'cubit emits TodoLoadedState without remove item after remove todo item',
+      setUp: () => mockTodoBoxResult(results: todos..add(removeTodo)),
+      build: () => sl<TodoCubit>(),
+      act: (TodoCubit cubit) => cubit.deleteTodo(removeTodo.id),
+      expect: () => [
+        TodoLoadedState(todos..remove(removeTodo)),
+      ],
+    );
+
+    tearDown(() {
+      todos = [
+        Todo.create(1, 'Pray'),
+        Todo.create(2, 'Eat'),
+        Todo.create(3, 'Work'),
+      ];
+    });
+  });
 
   tearDown(() async {
     FakeTodoBox.stubbedResults.clear();
@@ -90,7 +109,12 @@ class FakeTodoBox extends Fake implements Box<Todo> {
   @override
   int put(Todo object, {PutMode mode = PutMode.put}) {
     stubbedResults.add(object);
-    print('stubbedResults add ${object.toString()}');
     return object.id;
+  }
+
+  @override
+  bool remove(int id) {
+    stubbedResults.removeWhere((element) => element.id == id);
+    return true;
   }
 }
