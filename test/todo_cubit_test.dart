@@ -48,14 +48,35 @@ void main() {
     );
   });
 
+  group('todo operations', () {
+    final List<Todo> todos = [
+      Todo('Pray'),
+      Todo('Eat'),
+      Todo('Work'),
+    ];
+
+    final Todo newTodo = Todo('Sport');
+
+    blocTest(
+      'cubit emits TodoLoadedState with new item after add todo item',
+      setUp: () => mockTodoBoxResult(results: todos),
+      build: () => sl<TodoCubit>(),
+      act: (TodoCubit cubit) => cubit.addTodo(newTodo),
+      expect: () => [
+        TodoLoadedState(todos..add(newTodo)),
+      ],
+    );
+  });
+
+
   tearDown(() async {
-    FakeTodoBox.stubbedResults = [];
+    FakeTodoBox.stubbedResults.clear();
     await sl.reset();
   });
 }
 
 mockTodoBoxResult({required List<Todo> results}) {
-  FakeTodoBox.stubbedResults = results;
+  FakeTodoBox.stubbedResults.addAll(results);
 }
 
 class FakeObjectBoxStore extends Fake implements Store {}
@@ -65,4 +86,11 @@ class FakeTodoBox extends Fake implements Box<Todo> {
 
   @override
   List<Todo> getAll() => stubbedResults;
+
+  @override
+  int put(Todo object, {PutMode mode = PutMode.put}) {
+    stubbedResults.add(object);
+    print('stubbedResults add ${object.toString()}');
+    return object.id;
+  }
 }
