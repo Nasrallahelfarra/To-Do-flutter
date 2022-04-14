@@ -8,6 +8,7 @@ class Todo {
 
   bool isDone = false;
 
+  Todo.create(this.id, this.description);
   Todo(this.description);
 
   @override

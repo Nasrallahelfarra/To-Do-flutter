@@ -17,3 +17,10 @@ class TodoLoadedState extends TodoState {
   @override
   List<Object?> get props => [items];
 }
+
+class TodoEmptyState extends TodoState {
+  TodoEmptyState();
+
+  @override
+  List<Object?> get props => [];
+}

@@ -9,22 +9,19 @@ import 'core/object_box/object_box.dart';
 import 'core/object_box/objectbox.g.dart';
 import 'features/todo/presentation/ui/home_page.dart';
 
-
 GetIt sl = GetIt.instance;
-late ObjectBox objectBox;
 
-Future<void> main() async {
-
-  WidgetsFlutterBinding.ensureInitialized();
-
-  objectBox = await ObjectBox.create();
-  final store = objectBox.store;
-
+Future<void> registerFactories({required Store store}) async {
   sl.registerFactory<Box<Todo>>(() => store.box<Todo>());
   sl.registerFactory<TodoLocalDataSource>(() => TodoLocalDataSource(sl()));
   sl.registerFactory<TodoRepository>(() => TodoRepository(sl()));
   sl.registerFactory<TodoCubit>(() => TodoCubit(sl()));
+}
 
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final objectBox = await ObjectBox.create();
+  await registerFactories(store: objectBox.store);
   runApp(MyApp());
 }
 
@@ -35,12 +32,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Reactive Flutter',
       theme: ThemeData(
-        primarySwatch: Colors.indigo,
-        canvasColor: Colors.transparent
-      ),
+          primarySwatch: Colors.indigo, canvasColor: Colors.transparent),
       //Our only screen/page we have
       home: HomePage(title: 'My Todo List'),
     );
   }
 }
-
