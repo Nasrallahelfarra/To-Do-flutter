@@ -46,6 +46,26 @@ void main() {
         TodoLoadedState(todos),
       ],
     );
+
+    blocTest(
+      'cubit emits TodoLoadedState when search with known keyword',
+      setUp: () => mockTodoBoxResult(results: todos),
+      build: () => sl<TodoCubit>(),
+      act: (TodoCubit cubit) => cubit.search(todos.first.description),
+      expect: () => [
+        TodoLoadedState([todos.first]),
+      ],
+    );
+
+    blocTest(
+      'cubit emits TodoEmptyState when search with unknown keyword',
+      setUp: () => mockTodoBoxResult(results: todos),
+      build: () => sl<TodoCubit>(),
+      act: (TodoCubit cubit) => cubit.search('unknown'),
+      expect: () => [
+        TodoEmptyState(),
+      ],
+    );
   });
 
   group('todo operations', () {
