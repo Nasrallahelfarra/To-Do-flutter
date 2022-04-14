@@ -70,12 +70,22 @@ void main() {
     final Todo removeTodo = Todo.create(5, 'Sad');
 
     blocTest(
-      'cubit emits TodoLoadedState without remove item after remove todo item',
+      'cubit emits TodoLoadedState without removed item after remove todo item',
       setUp: () => mockTodoBoxResult(results: todos..add(removeTodo)),
       build: () => sl<TodoCubit>(),
       act: (TodoCubit cubit) => cubit.deleteTodo(removeTodo.id),
       expect: () => [
         TodoLoadedState(todos..remove(removeTodo)),
+      ],
+    );
+
+    blocTest(
+      'cubit emits TodoEmptyState after remove last todo item',
+      setUp: () => mockTodoBoxResult(results: todos..removeRange(0, 2)),
+      build: () => sl<TodoCubit>(),
+      act: (TodoCubit cubit) => cubit.deleteTodo(todos.last.id),
+      expect: () => [
+        TodoEmptyState(),
       ],
     );
 
