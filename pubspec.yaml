@@ -24,7 +24,7 @@ dev_dependencies:
   bloc_test: ^9.0.3
   build_runner: ^2.1.8
   objectbox_generator: ^1.4.1
-
+  mockito: ^5.1.0
 objectbox:
   output_dir: core/object_box/
 
