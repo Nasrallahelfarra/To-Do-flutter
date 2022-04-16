@@ -9,6 +9,11 @@ class TodoInitialState extends TodoState {
   List<Object?> get props => [];
 }
 
+class TodoEmptyState extends TodoState {
+  @override
+  List<Object?> get props => [];
+}
+
 class TodoLoadedState extends TodoState {
   final List<Todo> items;
 

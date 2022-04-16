@@ -11,20 +11,18 @@ import 'features/todo/presentation/ui/home_page.dart';
 
 
 GetIt sl = GetIt.instance;
-late ObjectBox objectBox;
 
-Future<void> main() async {
-
-  WidgetsFlutterBinding.ensureInitialized();
-
-  objectBox = await ObjectBox.create();
-  final store = objectBox.store;
-
+Future<void> init({required Store store}) async {
   sl.registerFactory<Box<Todo>>(() => store.box<Todo>());
   sl.registerFactory<TodoLocalDataSource>(() => TodoLocalDataSource(sl()));
   sl.registerFactory<TodoRepository>(() => TodoRepository(sl()));
   sl.registerFactory<TodoCubit>(() => TodoCubit(sl()));
+}
 
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final ObjectBox objectBox = await ObjectBox.create();
+  await init(store: objectBox.store);
   runApp(MyApp());
 }
 

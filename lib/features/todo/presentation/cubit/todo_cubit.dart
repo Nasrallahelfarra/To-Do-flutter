@@ -7,9 +7,7 @@ import 'todo_state.dart';
 class TodoCubit extends Cubit<TodoState> {
   final TodoRepository _todoRepository;
 
-  TodoCubit(this._todoRepository) : super(TodoInitialState()) {
-    getTodos();
-  }
+  TodoCubit(this._todoRepository) : super(TodoInitialState());
 
   void getTodos() async {
     List<Todo> items = await _todoRepository.getTodos();
@@ -18,7 +16,11 @@ class TodoCubit extends Cubit<TodoState> {
 
   Future<void> search(String keyword) async {
     List<Todo> items = await _todoRepository.search(keyword);
-    emit(TodoLoadedState(items));
+    if (items.isNotEmpty) {
+      emit(TodoLoadedState(items));
+    } else {
+      emit(TodoEmptyState());
+    }
   }
 
   void addTodo(Todo todo) async {
