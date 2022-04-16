@@ -11,7 +11,11 @@ class TodoCubit extends Cubit<TodoState> {
 
   void getTodos() async {
     List<Todo> items = await _todoRepository.getTodos();
-    emit(TodoLoadedState(items));
+    if (items.isNotEmpty) {
+      emit(TodoLoadedState(items));
+    } else {
+      emit(TodoEmptyState());
+    }
   }
 
   Future<void> search(String keyword) async {

@@ -16,7 +16,9 @@ void main() {
     sl.registerFactory<Box<Todo>>(() => FakeTodoBox());
   });
 
+
   group('get todo', () {
+
     final List<Todo> todos = [
       Todo('Pray'),
       Todo('Eat'),
@@ -27,30 +29,34 @@ void main() {
       'cubit emits TodoLoadedState when todo box is not empty',
       setUp: () => mockTodoBoxResult(results: todos),
       build: () => sl<TodoCubit>(),
-      act: (TodoCubit cubit) => cubit.getTodos(),
-      expect: () => [
-        TodoLoadedState(todos),
-      ],
     );
 
     blocTest(
       'cubit emits TodoLoadedState when search with known keyword',
       setUp: () => mockTodoBoxResult(results: todos),
       build: () => sl<TodoCubit>(),
-      act: (TodoCubit cubit) => cubit.search(todos.first.description),
-      expect: () => [
-        TodoLoadedState([todos.first]),
-      ],
     );
 
     blocTest(
       'cubit emits TodoEmptyState when search with unknown keyword',
       setUp: () => mockTodoBoxResult(results: todos),
       build: () => sl<TodoCubit>(),
-      act: (TodoCubit cubit) => cubit.search('unknown'),
-      expect: () => [
-        TodoEmptyState(),
-      ],
+    );
+  });
+
+  group('todo operations', () {
+    List<Todo> todos = [
+      Todo.create(1, 'Pray'),
+      Todo.create(2, 'Eat'),
+      Todo.create(3, 'Work'),
+    ];
+
+    final Todo newTodo = Todo.create(4, 'Sport');
+
+    blocTest(
+      'cubit emits TodoLoadedState with new item after add todo item',
+      setUp: () => mockTodoBoxResult(results: todos),
+      build: () => sl<TodoCubit>(),
     );
   });
 
