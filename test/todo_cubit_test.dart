@@ -4,8 +4,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:objectbox/objectbox.dart';
 import 'package:reactive_todo_app/features/todo/data/model/todo.dart';
 import 'package:reactive_todo_app/features/todo/presentation/cubit/todo_cubit.dart';
-import 'package:reactive_todo_app/features/todo/presentation/cubit/todo_state.dart';
 import 'package:reactive_todo_app/main.dart';
+
+import 'helpers/fake_object_box_store.dart';
+import 'helpers/fake_todo_box.dart';
 
 void main() {
   setUp(() async {
@@ -16,9 +18,7 @@ void main() {
     sl.registerFactory<Box<Todo>>(() => FakeTodoBox());
   });
 
-
   group('get todo', () {
-
     final List<Todo> todos = [
       Todo('Pray'),
       Todo('Eat'),
@@ -64,35 +64,4 @@ void main() {
     FakeTodoBox.stubbedResults.clear();
     await sl.reset();
   });
-}
-
-mockTodoBoxResult({required List<Todo> results}) {
-  FakeTodoBox.stubbedResults.addAll(results);
-}
-
-class FakeObjectBoxStore extends Fake implements Store {}
-
-class FakeTodoBox extends Fake implements Box<Todo> {
-  static List<Todo> stubbedResults = [];
-
-  @override
-  List<Todo> getAll() => stubbedResults;
-
-  @override
-  int put(Todo object, {PutMode mode = PutMode.put}) {
-    final int index =
-        stubbedResults.indexWhere((element) => element.id == object.id);
-    if (index != -1) {
-      stubbedResults[index] = object;
-    } else {
-      stubbedResults.add(object);
-    }
-    return object.id;
-  }
-
-  @override
-  bool remove(int id) {
-    stubbedResults.removeWhere((element) => element.id == id);
-    return true;
-  }
 }
