@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:objectbox/objectbox.dart';
 import 'package:reactive_todo_app/features/todo/data/model/todo.dart';
 import 'package:reactive_todo_app/features/todo/presentation/cubit/todo_cubit.dart';
+import 'package:reactive_todo_app/features/todo/presentation/cubit/todo_state.dart';
 import 'package:reactive_todo_app/main.dart';
 
 import 'helpers/fake_object_box_store.dart';
@@ -29,18 +30,40 @@ void main() {
       'cubit emits TodoLoadedState when todo box is not empty',
       setUp: () => mockTodoBoxResult(results: todos),
       build: () => sl<TodoCubit>(),
+      act: (TodoCubit cubit) => cubit.getTodos(),
+      expect: () => [
+        TodoLoadedState(todos),
+      ],
+    );
+
+    blocTest(
+      'cubit emits TodoLoadedState when todo box is  empty',
+      setUp: () => mockTodoBoxResult(results: []),
+      build: () => sl<TodoCubit>(),
+      act: (TodoCubit cubit) => cubit.getTodos(),
+      expect: () => [
+        TodoEmptyState(),
+      ],
     );
 
     blocTest(
       'cubit emits TodoLoadedState when search with known keyword',
       setUp: () => mockTodoBoxResult(results: todos),
       build: () => sl<TodoCubit>(),
+      act: (TodoCubit cubit) => cubit.search(todos.first.description),
+      expect: () => [
+        TodoLoadedState([todos.first])
+      ],
     );
 
     blocTest(
       'cubit emits TodoEmptyState when search with unknown keyword',
       setUp: () => mockTodoBoxResult(results: todos),
       build: () => sl<TodoCubit>(),
+      act: (TodoCubit cubit) => cubit.search('nunkonw'),
+      expect: () => [
+        TodoEmptyState(),
+      ],
     );
   });
 
@@ -57,6 +80,13 @@ void main() {
       'cubit emits TodoLoadedState with new item after add todo item',
       setUp: () => mockTodoBoxResult(results: todos),
       build: () => sl<TodoCubit>(),
+      act: (TodoCubit cubit) => cubit.addTodo(newTodo),
+      expect: () => [
+        TodoLoadedState(todos..add(newTodo)),
+      ],
+      verify: (TodoCubit cubit) {
+        expect((cubit.state as TodoLoadedState).items.length, equals(4));
+      },
     );
   });
 
