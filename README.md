@@ -1,20 +1,19 @@
-# Reactive Flutter Todo App
+# Flutter Todo App
 
-A reactive todo app that employs & cover different architectural patterns such as:
 
-1. Google"s Business Logic Component Architecture Design Pattern (BLoC)
-2. Reactive Programming using Dart streams (Similar to Redux)
-3. Asynchronous events & operations (like Future events)
-4. CRUD operations I/O using Local Database (SQLITE)
-5. Dependency injection (pure Dart)
-6. Separation of Concerns (code & files structure)
+Testing Flutter Applications
 
-## User Interface Sample
+Don't forget to test your Dart Code
+Testing is one of the most important things during the software development.
 
-https://user-images.githubusercontent.com/16699459/53305207-a159b380-388f-11e9-92f2-5b6480ef9887.png
+One of the beauty of the Dart Ecosystem, is the way developers can easily test their code.
 
-## Tutorial Guide
+Flutter has 4 types of tests.
 
-For the tutorial refer to medium post:
+Unit tests are the one used for testing a method, or class  use block testing.
 
-https://medium.com/@vaygeth/reactive-flutter-todo-app-using-bloc-design-pattern-b71e2434f692
+Widget tests are the tests for controlling single widget.
+
+End to End Testing use Test Driver.
+
+Integration with the Test Rail library to extract the reports of the End to End Testing
