@@ -19,10 +19,15 @@ class _HomePageState extends State<HomePage> {
   //Allows Todo card to be dismissable horizontally
   final DismissDirection _dismissDirection = DismissDirection.horizontal;
 
+
+
+
+
   @override
   Widget build(BuildContext context) {
+
     return BlocProvider<TodoCubit>(
-      create: (_) => sl<TodoCubit>(),
+      create: (_) => sl<TodoCubit>()..getTodos(),
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         body: SafeArea(
@@ -44,6 +49,7 @@ class _HomePageState extends State<HomePage> {
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
                 Builder(builder: (context) {
+
                   return IconButton(
                     icon: Icon(
                       Icons.menu,
@@ -207,6 +213,13 @@ class _HomePageState extends State<HomePage> {
         });
   }
 
+  @override
+  void initState() {
+
+    // TODO: implement initState
+    super.initState();
+  }
+
   void _showTodoSearchSheet(BuildContext context, TodoCubit cubit) {
     final _todoSearchDescriptionFormController = TextEditingController();
     showModalBottomSheet(
@@ -299,8 +312,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget getTodoCardWidget(TodoState state) {
     if (state is TodoLoadedState) {
-      return state.items.isNotEmpty
-          ? ListView.builder(
+      return ListView.builder(
               itemCount: state.items.length,
               itemBuilder: (context, itemPosition) {
                 Todo? todo = state.items[itemPosition];
@@ -383,13 +395,14 @@ class _HomePageState extends State<HomePage> {
                 );
                 return dismissibleCard;
               },
-            )
-          : Container(
-              child: Center(
-              //this is used whenever there 0 Todo
-              //in the data base
-              child: noTodoMessageWidget(),
-            ));
+            );
+
+    } else if (state is TodoEmptyState) {
+      return Container(
+        child: Center(
+          child: noTodoMessageWidget(),
+        ),
+      );
     } else {
       return Center(
         child: loadingData(),

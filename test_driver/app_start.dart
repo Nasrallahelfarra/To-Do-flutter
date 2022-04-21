@@ -12,7 +12,7 @@ main() async {
   enableFlutterDriverExtension();
   WidgetsFlutterBinding.ensureInitialized();
 
-  objectBox = await ObjectBox.create();
+  final ObjectBox objectBox = await ObjectBox.create();
   final store = objectBox.store;
 
   sl.registerFactory<Box<Todo>>(() => store.box<Todo>());
