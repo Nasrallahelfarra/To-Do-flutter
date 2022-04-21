@@ -1,4 +1,4 @@
-flutter To Do Test
+# Flutter Todo App
 Testing Flutter Applications
 
 Don't forget to test your Dart Code
