@@ -31,9 +31,9 @@ class Utilities {
   }
   static Future<void> testRailInitialize() async {
     TestRail.configure(
-        username: 'isharif@famcare.app',
-        password: '7vFp6ETyOf1XJXnXk3vQ',
-        serverDomain: 'https://famcare.testrail.io/');
+        username: 'xxxxxxx@gmail.com',
+        password: 'mypassword',
+        serverDomain: 'https://yourcompany.testrail.io/');
     //Create test run
     await createTestRun();
   }
