@@ -1,15 +1,14 @@
 # Flutter Todo App
 
 
-Testing Flutter Applications
 
-Don't forget to test your Dart Code
-Testing is one of the most important things during the software development.
+* ### Flutter driver end-end testing sample project
+    * This project is a todo list
+    * User can view the list ot items, add new item, mark item as done and delte item.
 
-One of the beauty of the Dart Ecosystem, is the way developers can easily test their code.
-
-
- 
+* ### Tools and Integrations
+    * Flutter driver library
+    * TestRail test management tool
 
  * ### By the current end to end tests, we were:
     * Verifying that the home screen is presented
