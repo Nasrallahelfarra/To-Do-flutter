@@ -19,3 +19,4 @@
  * ### Test result reporting:
     * Integration with the TestRail library to extract the reports of the End to End Testing
 
+![alt text](https://i.ibb.co/bHrVL4h/Development-processes-Page-7.png)
