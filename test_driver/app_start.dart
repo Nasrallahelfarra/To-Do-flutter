@@ -10,7 +10,7 @@ import 'package:reactive_todo_app/features/todo/presentation/cubit/todo_cubit.da
 import 'package:reactive_todo_app/main.dart';
 main() async {
   enableFlutterDriverExtension();
-  WidgetsFlutterBinding.ensureInitialized(); //<= the key is here
+  WidgetsFlutterBinding.ensureInitialized();
 
   objectBox = await ObjectBox.create();
   final store = objectBox.store;
