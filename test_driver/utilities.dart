@@ -13,7 +13,7 @@ class Utilities {
   static int failed = 5;
   static Future<void> setupAndGetDriver() async {
     driver = await FlutterDriver.connect();
-    await testRailInitialize();
+   // await testRailInitialize();
     var connected = false;
     while (!connected) {
       try {
@@ -64,10 +64,10 @@ class Utilities {
     await driver!.requestData(element);
   }
   static Future <void>setTestStatus(int idTestCase, int statusId) async {
-    await newRun.addResultForCase(
+   /* await newRun.addResultForCase(
       idTestCase,
       statusId: statusId,
-    );
+    );*/
   }
   static Future<void> tap(SerializableFinder element,{required int testCaseId}) async {
     try {
