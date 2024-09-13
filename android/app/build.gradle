@@ -38,7 +38,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.reactivetodoapp"
+        applicationId "com.newapp.to_do"
         minSdkVersion 20
         compileSdkVersion 34
         versionCode flutterVersionCode.toInteger()
