@@ -63,7 +63,9 @@ class Utilities {
 
       await setTestStatus(testCaseId, passed);
     } on TimeoutException catch (e) {
+
       await setTestStatus(testCaseId, failed);
+      e.toString();
     } catch (e) {
       await setTestStatus(testCaseId, failed);
     }
@@ -97,6 +99,8 @@ class Utilities {
       await setTestStatus(testCaseId, passed);
     } on TimeoutException catch (e) {
       print('Test Fail');
+      e.toString();
+
       await setTestStatus(testCaseId, failed);
     } catch (e) {
       await setTestStatus(testCaseId, failed);
@@ -112,6 +116,7 @@ class Utilities {
       await setTestStatus(testCaseId, passed);
     } on TimeoutException catch (e) {
       await setTestStatus(testCaseId, failed);
+      e.toString();
     } catch (e) {
       await setTestStatus(testCaseId, failed);
     }
@@ -125,6 +130,8 @@ class Utilities {
       await setTestStatus(testCaseId, passed);
     } on TimeoutException catch (e) {
       await setTestStatus(testCaseId, failed);
+      e.toString();
+
     } catch (e) {
       await setTestStatus(testCaseId, failed);
     }
@@ -138,6 +145,8 @@ class Utilities {
       await setTestStatus(testCaseId, passed);
     } on TimeoutException catch (e) {
       await setTestStatus(testCaseId, failed);
+      e.toString();
+
     } catch (e) {
       await setTestStatus(testCaseId, failed);
     }
@@ -155,6 +164,8 @@ class Utilities {
       await setTestStatus(testCaseId, passed);
     } on TimeoutException catch (e) {
       await setTestStatus(testCaseId, failed);
+      e.toString();
+
     } catch (e) {
       await setTestStatus(testCaseId, failed);
     }
