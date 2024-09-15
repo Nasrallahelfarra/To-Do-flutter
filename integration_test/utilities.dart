@@ -150,7 +150,7 @@ class Utilities {
     s.start();
     try {
       await tester.pump(timeout);
-      expect(finder, findsOneWidget);updae
+      expect(finder, findsOneWidget);
       await tester.pumpAndSettle();
       await setTestStatus(testCaseId, passed);
     } on TimeoutException catch (e) {
