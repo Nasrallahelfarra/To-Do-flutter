@@ -1,33 +1,19 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter_driver/flutter_driver.dart';
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:test_rail_dart/test_rail.dart';
 import 'package:test_rail_dart/test_run.dart';
 
 class Utilities {
-  static FlutterDriver? driver;
   static late TestRun newRun;
   static int passed = 1;
   static int failed = 5;
   static Future<void> setupAndGetDriver() async {
-    driver = await FlutterDriver.connect();
-   // await testRailInitialize();
-    var connected = false;
-    while (!connected) {
-      try {
-        await driver!.waitUntilFirstFrameRasterized();
-        connected = true;
-      } on TimeoutException {
-      } catch (error) {
 
-      }
-    }
   }
   static Future<void> closeDriver() async {
     sleep(const Duration(seconds: 5));
-    if (driver != null) driver!.close();
   }
   static Future<void> testRailInitialize() async {
     TestRail.configure(
@@ -61,7 +47,6 @@ class Utilities {
     );
   }
   static Future<void> requestData(String element) async {
-    await driver!.requestData(element);
   }
   static Future <void>setTestStatus(int idTestCase, int statusId) async {
    /* await newRun.addResultForCase(
@@ -69,9 +54,11 @@ class Utilities {
       statusId: statusId,
     );*/
   }
-  static Future<void> tap(SerializableFinder element,{required int testCaseId}) async {
+  static Future<void> tap(Finder element,WidgetTester tester,{required int testCaseId}) async {
     try {
-      await driver!.tap(element);
+      await tester.tap(element);
+      await tester.pumpAndSettle();
+      await tester.pump(Duration(seconds: 2));
       await setTestStatus(testCaseId, passed);
 
     } on TimeoutException catch(e) {
@@ -82,7 +69,7 @@ class Utilities {
 
     }
   }
-  static Future<void> verifyElementText(SerializableFinder element, String text,{required int testCaseId}) async {
+  /*static Future<void> verifyElementText(Finder element, String text,{required int testCaseId}) async {
     String actual = await driver!.getText(element);
     try {
       expect(actual, text);
@@ -94,15 +81,19 @@ class Utilities {
       await setTestStatus(testCaseId, failed);
 
     }
-  }
+  }*/
 
-  static Future<String> getText(SerializableFinder element,{required int testCaseId}) async {
+/*  static Future<String> getText(Finder element,{required int testCaseId}) async {
     String actual = await driver!.getText(element);
     return actual;
-  }
-  static Future<void> waitForElement(SerializableFinder element,{required int testCaseId}) async {
+  }*/
+  static Future<void> waitForElement(Finder element,WidgetTester tester,{required int testCaseId}) async {
     try {
-      await driver!.waitFor(element);
+      await tester.pump(Duration(seconds: 5));
+      await tester.pumpAndSettle();
+      expect(element, findsOneWidget);
+
+      // Verify the counter increments by 1.
       await setTestStatus(testCaseId, passed);
 
     } on TimeoutException catch(e) {
@@ -115,12 +106,11 @@ class Utilities {
   }
 
 
-  static Future<void> fillTextThenWait(SerializableFinder element, String text,
+  static Future<void> fillTextThenWait(Finder element, String text,WidgetTester tester,
       {required int testCaseId}  ) async {
     try {
-      await driver!.tap(element);
-      await driver!.enterText(text.trim());
-      await driver!.waitFor(find.text(text.trim()));
+      await  tester.enterText(element, text);
+      expect(find.text(text), findsOneWidget);
       await setTestStatus(testCaseId, passed);
 
     } on TimeoutException catch(e) {
@@ -133,9 +123,11 @@ class Utilities {
   }
 
 
-  static Future<void> waitForElementAbsent(SerializableFinder element,{required int testCaseId}) async {
+  static Future<void> waitForElementAbsent(Finder element,WidgetTester tester,{required int testCaseId}) async {
     try {
-      await driver!.waitForAbsent(element);
+      await tester.pump(Duration(seconds: 2));
+      await tester.pumpAndSettle();
+      expect(element, findsNothing);
       await setTestStatus(testCaseId, passed);
     } on TimeoutException catch(e) {
       await setTestStatus(testCaseId, failed);
@@ -146,10 +138,10 @@ class Utilities {
     }
   }
 
-  static Future<void> isPresented(SerializableFinder element,{required int testCaseId}
+  static Future<void> isPresented(Finder element,WidgetTester tester,{required int testCaseId}
       ) async {
     try {
-      expect(await Utilities.isPresent(element,testCaseId:testCaseId ), true);
+      expect(await Utilities.isPresent(element,tester,testCaseId:testCaseId ), true);
       await setTestStatus(testCaseId, passed);
 
     } on TimeoutException catch(e) {
@@ -161,12 +153,14 @@ class Utilities {
     }
 
   }
-  static Future<bool> isPresent(SerializableFinder finder,
+  static Future<bool> isPresent(Finder finder,WidgetTester tester,
       {Duration timeout = const Duration(seconds: 5),required int testCaseId}) async {
     Stopwatch s = Stopwatch();
     s.start();
     try {
-      await driver!.waitFor(finder, timeout: timeout);
+      await tester.pump(timeout);
+      expect(finder, findsOneWidget);
+      await tester.pumpAndSettle();
       await setTestStatus(testCaseId, passed);
 
     } on TimeoutException catch(e) {

@@ -3,3 +3,4 @@ flutter drive --target=test_driver/app_start.dart --driver=test_driver/app_start
 
 
 
+flutter test integration_test/app_start.dart

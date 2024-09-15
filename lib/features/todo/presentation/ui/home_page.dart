@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage> {
                   return IconButton(
                     icon: Icon(
                       Icons.menu,
-                      key: const ValueKey(keyMenuIcon),
+                      key: const Key(keyMenuIcon),
 
                       color: Colors.indigoAccent,
                       size: 28,
@@ -67,7 +67,7 @@ class _HomePageState extends State<HomePage> {
                 Expanded(
                   child: Text(
                     'Todo',
-                    key: const ValueKey(keyNameAppText),
+                    key: const Key(keyNameAppText),
 
                     style: TextStyle(
                         color: Colors.black,
@@ -82,7 +82,7 @@ class _HomePageState extends State<HomePage> {
                     return IconButton(
                       icon: Icon(
                         Icons.search,
-                        key: const ValueKey(keySearchIcon),
+                        key: const Key(keySearchIcon),
 
                         size: 28,
                         color: Colors.indigoAccent,
@@ -106,7 +106,7 @@ class _HomePageState extends State<HomePage> {
           padding: EdgeInsets.only(bottom: 25),
           child: Builder(builder: (context) {
             return FloatingActionButton(
-              key: const ValueKey(keyAddToDo),
+              key: const Key(keyAddToDo),
               elevation: 5.0,
               onPressed: () {
                 final TodoCubit cubit = context.read<TodoCubit>();
@@ -156,7 +156,7 @@ class _HomePageState extends State<HomePage> {
                               controller: _todoDescriptionFormController,
                               textInputAction: TextInputAction.newline,
                               maxLines: 4,
-                              key: const ValueKey(keyAddToDoTextFiled),
+                              key: const Key(keyAddToDoTextFiled),
                               style: TextStyle(
                                   fontSize: 21, fontWeight: FontWeight.w400),
                               autofocus: true,
@@ -182,7 +182,7 @@ class _HomePageState extends State<HomePage> {
                               backgroundColor: Colors.indigoAccent,
                               radius: 18,
                               child: IconButton(
-                                key: const ValueKey(keySaveIcon),
+                                key: const Key(keySaveIcon),
                                 icon: Icon(
                                   Icons.save,
                                   size: 22,
@@ -344,7 +344,7 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.white,
                       child: ListTile(
                         trailing: InkWell(
-                            key:  ValueKey('$keyRemoveIcon$itemPosition'),
+                            key:  Key('$keyRemoveIcon$itemPosition'),
 
                             onTap: () {
                               final TodoCubit cubit = context.read<TodoCubit>();
@@ -367,14 +367,14 @@ class _HomePageState extends State<HomePage> {
                               child: todo.isDone
                                   ? Icon(
                                       Icons.done,
-                                key:  ValueKey('$keyToDoSelectCheckBox$itemPosition'),
+                                key:  Key('$keyToDoSelectCheckBox$itemPosition'),
                                 size: 26.0,
                                       color: Colors.indigoAccent,
                                     )
                                   : Icon(
                                       Icons.check_box_outline_blank,
                                       size: 26.0,
-                                key:  ValueKey('$keyToDoUnSelectCheckBox$itemPosition'),
+                                key:  Key('$keyToDoUnSelectCheckBox$itemPosition'),
                                 color: Colors.tealAccent,
                                     ),
                             ),
@@ -382,7 +382,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         title: Text(
                           todo.description,
-                          key:  ValueKey('$keyTitleToDoText$itemPosition'),
+                          key:  Key('$keyTitleToDoText$itemPosition'),
                           style: TextStyle(
                               fontSize: 16.5,
                               fontFamily: 'RobotoMono',
